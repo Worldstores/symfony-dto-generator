@@ -9,7 +9,7 @@
         "goetas/xsd-reader": "^1.0"
     },
     "autoload": {
-        "psr-0": { "WsSys\\DtoGeneratorBundle": "" }
+        "psr-4": { "WsSys\\DtoGeneratorBundle\\": "" }
     },
     "config": {
         "bin-dir": "bin"
