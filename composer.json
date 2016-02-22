@@ -1,0 +1,17 @@
+{
+    "name": "worldstores/dto-generator-bundle",
+    "type": "symfony-bundle",
+    "description": "Converts XSD/JSON definitions into PHP classes",
+    "license":      "MIT",
+    "keywords": ["converter", "xml", "xsd", "php", "symfony"],
+    "require": {
+        "goetas/xsd2php": "^1.0",
+        "goetas/xsd-reader": "^1.0"
+    },
+    "autoload": {
+        "psr-0": { "WsSys\\DtoGeneratorBundle": "" }
+    },
+    "config": {
+        "bin-dir": "bin"
+    }
+}
