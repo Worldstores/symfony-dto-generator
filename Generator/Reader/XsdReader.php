@@ -2,6 +2,8 @@
 
 namespace WsSys\DtoGeneratorBundle\Generator\Reader;
 
+use WsSys\DtoGeneratorBundle\Generator\Reader\Xsd\Element;
+
 /**
  * Reads Xsd and it's elements
  */
@@ -26,20 +28,24 @@ class XsdReader
     /**
      * Return First Element from Xsd
      * 
-     * @return type
+     * @return Element | null if not found
      */
     public function getFirstElement()
     {
         $nodes = $this->start->childNodes;
         foreach ($nodes as $node) {
             if ($node->nodeType === XML_ELEMENT_NODE) {
-                return $node->getAttribute('name');
+                $element = new \WsSys\DtoGeneratorBundle\Generator\Reader\Xsd\Element();
+                $element->setName($node->getAttribute('name'))
+                        ->setNode($node);
+                return $element;
             }
         }
+        return null;
     }
     
     
-    public function getNodesFromFirstElement($node) 
+    public function getChildrenNodes($node) 
     {
         $child = $node->childNodes;
         

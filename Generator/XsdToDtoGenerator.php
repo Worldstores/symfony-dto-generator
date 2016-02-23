@@ -2,13 +2,16 @@
 
 namespace WsSys\DtoGeneratorBundle\Generator;
 
+use Sensio\Bundle\GeneratorBundle\Generator\Generator;
 use WsSys\DtoGeneratorBundle\Exception\InvalidArgumentException;
 use WsSys\DtoGeneratorBundle\Generator\Reader\XsdReader;
+
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Generate the Dtos from Xsd
  */
-class XsdToDtoGenerator
+class XsdToDtoGenerator extends Generator
 {
     /**
      * Source file location
@@ -30,6 +33,16 @@ class XsdToDtoGenerator
      * @var string 
      */
     protected $destinationNS;
+    
+    /**
+     * Constructor.
+     *
+     * @param Filesystem $filesystem A Filesystem instance
+     */
+    public function __construct(Filesystem $filesystem)
+    {
+        $this->filesystem  = $filesystem;
+    }
     
     /**
      * Sets the source
@@ -105,7 +118,7 @@ class XsdToDtoGenerator
      * 
      * @throws InvalidArgumentException
      */
-    public function generate()
+    public function generate($forceOverwrite = true, $format = 'php')
     {
         $source = $this->getSource();
         if (!$source) {
@@ -126,7 +139,32 @@ class XsdToDtoGenerator
         $reader->read($source);
         
         $firstElement = $reader->getFirstElement();
-        print_r($firstElement); exit;
         
+        $this->setFormat($format);
+        $this->generateDTOClass($forceOverwrite, $firstElement);
+        
+    }
+
+    /**
+     * Sets the configuration format.
+     *
+     * @param string $format The configuration format
+     */
+    private function setFormat($format)
+    {
+        $this->format = $format;
+    }
+
+    /**
+     * Creates a file
+     * @param Element $element
+     * @throws \RuntimeException
+     */
+    protected function generateDTOClass($element)
+    {
+        $this->renderFile('dto.php.twig', $this->destination, array(
+            'namespace' => $this->destinationNS,
+            'element' => $element
+        ));
     }
 }

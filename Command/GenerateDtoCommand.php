@@ -8,13 +8,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console;
-use Symfony\Component\Console\Command\Command;
+use Symfony\Component\HttpKernel\Bundle\BundleInterface;
+use Sensio\Bundle\GeneratorBundle\Command\GeneratorCommand;
 use WsSys\DtoGeneratorBundle\Generator\XsdToDtoGenerator;
 
 /**
  * Command to generate the Dtos
  */
-class GenerateDtoCommand extends Command implements ContainerAwareInterface
+class GenerateDtoCommand extends GeneratorCommand implements ContainerAwareInterface
 {
     /**
      * All the supported Types eg: xsd, json
@@ -97,16 +98,34 @@ class GenerateDtoCommand extends Command implements ContainerAwareInterface
             throw new \Exception("Destination must be a directory.");
         }
         
-        $xsdToDtoGenerator = new XsdToDtoGenerator($src, $destination, $destinationNS);
-        try {
-            $xsdToDtoGenerator->setSource($src)
+        $generator = $this->getGenerator();
+        $generator->setSource($src)
                     ->setDestination($destination)
                     ->setDestinationNS($destinationNS)
                     ->generate();
-  
-        } catch (\Exception $e) {
-            echo 'Dto Could not be generated. ' . $e->getMessage();
-        } 
+                
         echo 'Generated All the DTOs';
+    }
+    
+    /**
+     * {@inheritdoc}
+     * @param BundleInterface $bundle
+     * 
+     * @return array
+     */
+    protected function getSkeletonDirs(BundleInterface $bundle = null)
+    {
+        $skeletonDirs = array();
+        $skeletonDirs[] = __DIR__.'/../Resources/skeleton';
+        return $skeletonDirs;
+    }
+    
+    /**
+     * creates a generator
+     * @return XsdToDtoGenerator
+     */
+    protected function createGenerator()
+    {
+        return new XsdToDtoGenerator($this->getContainer()->get('filesystem'));
     }
 }
