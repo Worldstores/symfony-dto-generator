@@ -35,6 +35,18 @@ class XsdToDtoGenerator extends Generator
     protected $destinationNS;
     
     /**
+     * Target File
+     * 
+     * @var string 
+     */
+    protected $target;
+    
+    /**
+     * @var Filesystem
+     */
+    protected $filesystem;
+    
+    /**
      * Constructor.
      *
      * @param Filesystem $filesystem A Filesystem instance
@@ -120,6 +132,7 @@ class XsdToDtoGenerator extends Generator
      */
     public function generate($forceOverwrite = true, $format = 'php')
     {
+        $this->setFormat($format);
         $source = $this->getSource();
         if (!$source) {
             throw new InvalidArgumentException('Source');
@@ -134,15 +147,24 @@ class XsdToDtoGenerator extends Generator
         if (!$destinationNS) {
             throw new InvalidArgumentException('DestinationNS');
         }
-        
+
         $reader = new XsdReader();
         $reader->read($source);
         
         $firstElement = $reader->getFirstElement();
-        
-        $this->setFormat($format);
-        $this->generateDTOClass($forceOverwrite, $firstElement);
-        
+        $this->setTargetFile(ucfirst($firstElement->getName()));
+        $this->generateDTOClass($firstElement, $forceOverwrite);
+    }
+    
+    /**
+     * Returns a target file
+     * 
+     * @return string
+     */
+    protected function setTargetFile($elementName)
+    {
+        $this->target = sprintf("{$this->destination}/%s.%s", $elementName, $this->format);
+        return $this;
     }
 
     /**
@@ -150,7 +172,7 @@ class XsdToDtoGenerator extends Generator
      *
      * @param string $format The configuration format
      */
-    private function setFormat($format)
+    protected function setFormat($format)
     {
         $this->format = $format;
     }
@@ -160,9 +182,13 @@ class XsdToDtoGenerator extends Generator
      * @param Element $element
      * @throws \RuntimeException
      */
-    protected function generateDTOClass($element)
+    protected function generateDTOClass($element, $forceOverwrite)
     {
-        $this->renderFile('dto.php.twig', $this->destination, array(
+        if (!$forceOverwrite && is_file($this->target)) {
+            throw new \Exception ('File already exists and you have not asked to overwrite.');
+        }
+        
+        $this->renderFile('dto.php.twig', $this->target, array(
             'namespace' => $this->destinationNS,
             'element' => $element
         ));

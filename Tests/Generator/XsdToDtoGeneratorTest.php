@@ -3,6 +3,7 @@
 namespace WsSys\DtoGeneratorBundle\Tests\Generator;
 
 use WsSys\DtoGeneratorBundle\Generator\XsdToDtoGenerator;
+use Symfony\Component\Filesystem\Filesystem;
 
 class XsdToDtoGeneratorTest extends \PhpUnit_Framework_TestCase
 {
@@ -21,7 +22,8 @@ class XsdToDtoGeneratorTest extends \PhpUnit_Framework_TestCase
         $this->destination = __DIR__ . '/DTO';
         $this->destinationNS = 'WsSys\DtoGeneratorBundle\Tests\Generator\DTO';
         
-        $this->generator = new XsdToDtoGenerator();
+        $this->generator = new XsdToDtoGenerator(new Filesystem());
+        $this->generator->setSkeletonDirs($this->getSkeletonDirs());
         parent::setUp();
     }
     
@@ -75,4 +77,16 @@ class XsdToDtoGeneratorTest extends \PhpUnit_Framework_TestCase
         $this->assertFileExists($this->destination . '/VendorOrder.php');
     }
     
+    /**
+     * Sets the Skelaton Dirs
+     * 
+     * @param \WsSys\DtoGeneratorBundle\Tests\Generator\BundleInterface $bundle
+     * @return string
+     */
+    protected function getSkeletonDirs()
+    {
+        $skeletonDirs = array();
+        $skeletonDirs[] = __DIR__.'/../../Resources/skeleton';
+        return $skeletonDirs;
+    }
 }

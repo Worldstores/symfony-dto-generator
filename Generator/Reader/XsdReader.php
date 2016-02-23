@@ -37,42 +37,62 @@ class XsdReader
             if ($node->nodeType === XML_ELEMENT_NODE) {
                 $element = new \WsSys\DtoGeneratorBundle\Generator\Reader\Xsd\Element();
                 $element->setName($node->getAttribute('name'))
-                        ->setNode($node);
+                        ->setNode($node)
+                        ->setFirstElement(true);
+                
+                $children = $this->getChildrenNodes($node);
+                $element->setChildren($children);
+                
                 return $element;
             }
         }
         return null;
     }
     
-    
     public function getChildrenNodes($node) 
     {
-        $child = $node->childNodes;
+        $retval = array();
+        $children = $node->childNodes;
         
-        foreach($child as $item) {
-            
-          if ($item->nodeType == XML_TEXT_NODE) {
-            if (strlen(trim($item->nodeValue))) {
-                echo trim($item->nodeValue). "\r\n";
-            }
+        foreach($children as $item) {
+          if ($item->nodeType === XML_ELEMENT_NODE) {
+                $element = new \WsSys\DtoGeneratorBundle\Generator\Reader\Xsd\Element();
+                $element->setName($item->getAttribute('name'))
+                        ->setNode($item)
+                        ->setCdata(false)
+                        ->setType('string');
+            $retval[] = $element;    
           } 
-          
-          else if ($item->nodeType == XML_ELEMENT_NODE) {
-              
-              $name = $item->getAttribute('name');
-              echo $name . "\r\n";  
-              
-              $type = $item->getAttribute('type');
-              echo 'Type: ' . $type . "\r\n";
-              
-              $minOccurs = $item->getAttribute('minOccurs');
-              echo 'min: ' . $minOccurs . "\r\n";
-              
-              $this->getNodes($item);
-          }
         }
+        return $retval;
     }
     
     
-    
+//    public function getChildrenNodes($node) 
+//    {
+//        $child = $node->childNodes;
+//        
+//        foreach($child as $item) {
+//            
+//          if ($item->nodeType == XML_TEXT_NODE) {
+//            if (strlen(trim($item->nodeValue))) {
+//                echo trim($item->nodeValue). "\r\n";
+//            }
+//          } 
+//          
+//          else if ($item->nodeType == XML_ELEMENT_NODE) {
+//              
+//              $name = $item->getAttribute('name');
+//              echo $name . "\r\n";  
+//              
+//              $type = $item->getAttribute('type');
+//              echo 'Type: ' . $type . "\r\n";
+//              
+//              $minOccurs = $item->getAttribute('minOccurs');
+//              echo 'min: ' . $minOccurs . "\r\n";
+//              
+//              $this->getNodes($item);
+//          }
+//        }
+//    }
 }

@@ -33,6 +33,27 @@ class Element
     protected $node;
     
     /**
+     * Declares if its first element
+     * 
+     * @var boolean
+     */
+    protected $firstElement;
+    
+    /**
+     * Type of the element
+     * 
+     * @var string 
+     */
+    protected $type;
+    
+    /**
+     * Whether the elemet is cdata
+     * 
+     * @var boolean
+     */
+    protected $cdata;
+    
+    /**
      * @param string $name
      * 
      * @return Element
@@ -51,6 +72,12 @@ class Element
         return $this->name;
     }
     
+    public function getUcfirstName()
+    {
+        return ucfirst($this->name);
+    }
+
+
     /**
      * @param DOMNode $node
      * @return Element
@@ -68,5 +95,59 @@ class Element
     {
         return $this->node;
     }
+    
+    public function addChild($child)
+    {
+        $this->children[] = $child;
+        
+        return $this;
+    }
+    
+    public function setChildren($children)
+    {
+        $this->children = $children;
+        
+        return $this;
+    }
+    
+    public function getChildren()
+    {
+        return $this->children;
+    }
+    
+    public function setFirstElement($firstElement)
+    {
+        $this->firstElement = $firstElement;
+        
+        return $this;
+    }
+    
+    public function getFirstElement()
+    {
+        return $this->firstElement;
+    }
+    
+    public function setCdata($cdata)
+    {
+        $this->cdata = $cdata;
+        
+        return $this;
+    }
+    
+    public function getCdata()
+    {
+        return $this->cdata;
+    }
+    
+    public function setType($type)
+    {
+        $this->type = $type;
+        
+        return $this;
+    }
+    
+    public function getType()
+    {
+        return $this->type;
+    }
 }
-

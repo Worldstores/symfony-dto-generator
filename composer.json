@@ -12,7 +12,8 @@
         "sensio/generator-bundle": "~3.0",
         "phpunit/phpunit": "4.8.*",
         "symfony/phpunit-bridge": "~2.7",
-        "mockery/mockery": "^0.9.4"
+        "mockery/mockery": "^0.9.4",
+        "twig/twig": "1.8.2"
     },
     "autoload": {
         "psr-4": { "WsSys\\DtoGeneratorBundle\\": "" }
