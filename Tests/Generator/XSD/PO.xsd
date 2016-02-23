@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="vendorOrder">
+		<xs:complexType>
+			<xs:all>
+				<xs:element name="vendorOrderId" type="xs:string" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Unique order identifier in the client ERP. If sent, the identifier is used for the goods receipt feed (GR ) produced by the warehouse and sent back to the ERP.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="poNumber">
+					<xs:annotation>
+						<xs:documentation>Unique purchase order reference to be used by the warehouse. This is printed on the delivery PO note.</xs:documentation>
+					</xs:annotation>
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:pattern value="[0-9a-zA-Z\-_]{1,10}"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="distributionCentre" type="xs:string" default="GSIUK01" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Distribution centre that is going to receive the delivery.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="catalogId" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Catalogue identifier or category name, used when multiple catalogues exist (e.g. if running multiple brand under a single warehouse)</xs:documentation>
+					</xs:annotation>
+                                        <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                                <xs:minLength value="0"/>
+                                                <xs:maxLength value="10"/>
+                                            </xs:restriction>
+                                        </xs:simpleType>
+				</xs:element>
+				<xs:element name="clientId">
+					<xs:annotation>
+						<xs:documentation>Client identifier. Provided at the time of integration</xs:documentation>
+					</xs:annotation>
+                                        <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                                <xs:minLength value="1"/>
+                                                <xs:maxLength value="10"/>
+                                            </xs:restriction>
+                                        </xs:simpleType>
+				</xs:element>
+				<xs:element name="vendorId" type="xs:string" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Vendor identifier in the ERP system</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="carrierName" type="xs:string" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Carrier name that will deliver the PO, if known.</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="shipDate" type="xs:date" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Shipping date. Format: YYYY-mm-dd</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="expectedDeliveryDate" type="xs:date" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Date when the PO is expected to be delivered to the warehouse. Format: YYYY-mm-dd</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="countryOfOrigin" type="xs:string" minOccurs="0"/>
+				<xs:element name="shipToAddress" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Warehouse address</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="companyName" type="xs:string" minOccurs="0"/>
+							<xs:element name="address1" type="xs:string"/>
+							<xs:element name="address2" type="xs:string" minOccurs="0"/>
+							<xs:element name="city" type="xs:string"/>
+							<xs:element name="zip" type="xs:string">
+								<xs:annotation>
+									<xs:documentation>Postcode</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="state" type="xs:string" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>County / state / regoin</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="country" type="xs:string"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="shipFromAddress" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Vendor’s Address</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="companyName" type="xs:string" minOccurs="0"/>
+							<xs:element name="address1" type="xs:string"/>
+							<xs:element name="address2" type="xs:string" minOccurs="0"/>
+							<xs:element name="city" type="xs:string"/>
+							<xs:element name="zip" type="xs:string"/>
+							<xs:element name="state" type="xs:string" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>County / state / regoin</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="country" type="xs:string"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="lines">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="line" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:all>
+										<xs:element name="lineId" type="xs:string" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>Line identifier in the ERP systems. If sent, the identifier is used for the goods receipt feed (GR ) produced by the warehouse and sent back to the ERP.</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="lineNumber" type="xs:integer">
+											<xs:annotation>
+												<xs:documentation>Sequence number of the line within then purchase order</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="productName" type="xs:string" minOccurs="0"/>
+										<xs:element name="altSku" type="xs:string" minOccurs="0"/>
+										<xs:element name="sku" type="xs:string">
+											<xs:annotation>
+												<xs:documentation>Unique product identifier.</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="qty">
+											<xs:annotation>
+												<xs:documentation>Expected product quantity. Must be greater than zero</xs:documentation>
+											</xs:annotation>
+											<xs:simpleType>
+												<xs:restriction base="xs:positiveInteger">
+													<xs:minInclusive value="1"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+									</xs:all>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
