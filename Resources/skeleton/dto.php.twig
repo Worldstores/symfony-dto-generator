@@ -20,19 +20,17 @@ class {{ element.ucfirstName }}
      * @var {{ node.type }}
      * @Annotation\Type("{{ node.type }}")
      * @Annotation\SerializedName("{{ node.name }}")
-     * @Annotation\XmlElement(cdata={{ node.cdata }})
+     * @Annotation\XmlElement(cdata=false)
      */
     private ${{ node.name }};
     
     {% endfor %}
-   
     {% if element.firstElement == 1 %}
 /**
      * @var string 
      * @Annotation\Exclude()
      */
     private $token;
-    
     {% endif %}
 
     {% for node in element.children %}
@@ -43,7 +41,7 @@ class {{ element.ucfirstName }}
      *
      * @return {{ element.ucfirstName }}
      */
-     public function set{{ node.ucfirstName }}(${{ node.name }})
+    public function set{{ node.ucfirstName }}(${{ node.name }})
     {
         $this->{{ node.name }} = ${{ node.name }};
 
@@ -59,6 +57,7 @@ class {{ element.ucfirstName }}
     {
         return $this->{{ node.name }};
     }
+    
     {% endfor %}
     
     {% if element.firstElement == 1 %}
@@ -85,5 +84,6 @@ class {{ element.ucfirstName }}
     {
         return $this->token;
     }
-    {% endif %}
+{% endif %}
+
 }

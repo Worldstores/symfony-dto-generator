@@ -151,9 +151,8 @@ class XsdToDtoGenerator extends Generator
         $reader = new XsdReader();
         $reader->read($source);
         
-        $firstElement = $reader->getFirstElement();
-        $this->setTargetFile(ucfirst($firstElement->getName()));
-        $this->generateDTOClass($firstElement, $forceOverwrite);
+        $firstElement = $reader->getFirstElementWithChildren();
+        $this->genereateDTOClasses($firstElement, $forceOverwrite);
     }
     
     /**
@@ -176,6 +175,19 @@ class XsdToDtoGenerator extends Generator
     {
         $this->format = $format;
     }
+    
+    
+    protected function genereateDTOClasses($firstElementWithChildren, $forceOverwrite)
+    {
+        foreach ($firstElementWithChildren->getChildren() as $element) {
+            if ($element instanceof Reader\Xsd\ComplexTypeElement) {
+                $element->setType($this->getTypeForChildDto($element));
+                $this->genereateDTOClasses($element, $forceOverwrite);
+            }
+        }
+        $this->setTargetFile(ucfirst($firstElementWithChildren->getName()));
+        $this->generateDTOClass($firstElementWithChildren, $forceOverwrite);
+    }
 
     /**
      * Creates a file
@@ -192,5 +204,15 @@ class XsdToDtoGenerator extends Generator
             'namespace' => $this->destinationNS,
             'element' => $element
         ));
+    }
+    
+    /**
+     * Get Name for Child DTO
+     * @param Element $element
+     * @return string
+     */
+    protected function getTypeForChildDto($element)
+    {
+        return $this->destinationNS . '\\' . ucfirst($element->getName());
     }
 }

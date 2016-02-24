@@ -20,12 +20,7 @@ class Element
     /**
      * @var array 
      */
-    protected $parents = array();
-    
-    /**
-     * @var array 
-     */
-    protected $children = array();
+    protected $parent;
     
     /**
      * @var DOMNode 
@@ -45,13 +40,6 @@ class Element
      * @var string 
      */
     protected $type;
-    
-    /**
-     * Whether the elemet is cdata
-     * 
-     * @var boolean
-     */
-    protected $cdata;
     
     /**
      * @param string $name
@@ -96,25 +84,6 @@ class Element
         return $this->node;
     }
     
-    public function addChild($child)
-    {
-        $this->children[] = $child;
-        
-        return $this;
-    }
-    
-    public function setChildren($children)
-    {
-        $this->children = $children;
-        
-        return $this;
-    }
-    
-    public function getChildren()
-    {
-        return $this->children;
-    }
-    
     public function setFirstElement($firstElement)
     {
         $this->firstElement = $firstElement;
@@ -125,18 +94,6 @@ class Element
     public function getFirstElement()
     {
         return $this->firstElement;
-    }
-    
-    public function setCdata($cdata)
-    {
-        $this->cdata = $cdata;
-        
-        return $this;
-    }
-    
-    public function getCdata()
-    {
-        return $this->cdata;
     }
     
     public function setType($type)
