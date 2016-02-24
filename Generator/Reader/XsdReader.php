@@ -10,9 +10,14 @@ use WsSys\DtoGeneratorBundle\Generator\DataMapper\DataTypeMapper;
  */
 class XsdReader
 {
-    
+    /**
+     * @var \DOMDocument 
+     */
     protected $dom;
     
+    /**
+     * @var \DOMElement 
+     */
     protected $start;
     
     /**
@@ -38,9 +43,9 @@ class XsdReader
             if ($node->nodeType === XML_ELEMENT_NODE) {
                 $element = new \WsSys\DtoGeneratorBundle\Generator\Reader\Xsd\ComplexTypeElement();
                 $element->setName($node->getAttribute('name'))
-                        ->setFirstElement(true);
+                        ->setElementAsFirst(true);
                 
-                $this->getChildrenNodes($node, $element);
+                $this->addChildrenElements($node, $element);
 
                 return $element;
             }
@@ -48,14 +53,16 @@ class XsdReader
         return null;
     }
     
-    public function getChildrenNodes($parentNode, &$parentElement) 
+    /**
+     * Add Children Elements to the given parentElement
+     * 
+     * @param DOMNode $parentNode
+     * @param Element $parentElement
+     */
+    public function addChildrenElements($parentNode, &$parentElement) 
     {
-        $retval = array();
         $children = $parentNode->childNodes;
 
-        /**
-         * Need to look at the node type whose namespace is element.. then only it will work. 
-         */
         foreach ($children as $node) {
             if ($node->nodeType === XML_ELEMENT_NODE) {
                 $localName = $node->localName;
@@ -64,8 +71,10 @@ class XsdReader
                     case 'complexType':
                     case 'all':
                     case 'sequence':
-                        //returns the nodes under the complex type
-                        $this->getChildrenNodes($node, $parentElement);
+                        /**
+                         * Recursively looking at element(localname) node
+                         */
+                        $this->addChildrenElements($node, $parentElement);
                         break;
                     case 'element':
                         if ($this->isComplexTypeNode($node)) {
@@ -79,9 +88,9 @@ class XsdReader
                             $element->setName($node->getAttribute('name'));
 
                             if ($node->getAttribute('type')) {
-                                $element->setType(DataTypeMapper::XsdToDto($node->getAttribute('type')));
+                                $element->setDataType(DataTypeMapper::XsdToDto($node->getAttribute('type')));
                             } else {
-                                $this->setElementType($node, $element);
+                                $this->setElementsDataType($node, $element);
                             }
                             $parentElement->addChild($element);
                         }
@@ -94,20 +103,21 @@ class XsdReader
     }
     
     /**
-     * Recursively looks at an element with type and sets the type of the element
+     * Recursively looks at an element which has DataType and sets the type of the element
+     * 
      * @param DOMNode $node
      * @param Element $element
      */
-    protected function setElementType($node, &$element)
+    protected function setElementsDataType($node, &$element)
     {
         $childNodes = $node->childNodes;
         
         foreach ($childNodes as $childNode) {
             $localName = $childNode->localName;
             if ($localName == 'simpleType') {
-                $this->setElementType($childNode, $element);
+                $this->setElementsDataType($childNode, $element);
             } elseif ($localName == 'restriction' ) {
-                $element->setType(DataTypeMapper::XsdToDto($childNode->getAttribute('base')));
+                $element->setDataType(DataTypeMapper::XsdToDto($childNode->getAttribute('base')));
                 return;
             } else {
                 continue;
@@ -146,7 +156,7 @@ class XsdReader
         foreach ($childNodes as $childNode) {
             $localName = $childNode->localName;
             if ($childNode->nodeType === XML_ELEMENT_NODE && $localName == 'complexType') {
-                $this->getChildrenNodes($childNode, $element);
+                $this->addChildrenElements($childNode, $element);
             }
         }
     }

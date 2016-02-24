@@ -18,16 +18,6 @@ class Element
     protected $attributes = array();
     
     /**
-     * @var array 
-     */
-    protected $parent;
-    
-    /**
-     * @var DOMNode 
-     */
-    protected $node;
-    
-    /**
      * Declares if its first element
      * 
      * @var boolean
@@ -35,11 +25,11 @@ class Element
     protected $firstElement;
     
     /**
-     * Type of the element
+     * Type of data that the element holds
      * 
      * @var string 
      */
-    protected $type;
+    protected $dataType;
     
     /**
      * @param string $name
@@ -60,51 +50,58 @@ class Element
         return $this->name;
     }
     
+    /**
+     * Return name with uppercase first character
+     * 
+     * @return string
+     */
     public function getUcfirstName()
     {
         return ucfirst($this->name);
     }
-
-
+    
     /**
-     * @param DOMNode $node
+     * Sets type of data that an Element holds
+     * 
+     * @param string $type
      * @return Element
      */
-    public function setNode($node)
+    public function setDataType($type)
     {
-        $this->node = $node;
+        $this->dataType = $type;
+        
         return $this;
     }
     
     /**
-     * @return DomNode
+     * Gets type of data that an elements holds
+     * 
+     * @return string
      */
-    public function getNode()
+    public function getDataType()
     {
-        return $this->node;
+        return $this->dataType;
     }
-    
-    public function setFirstElement($firstElement)
+
+    /**
+     * Sets the Element as first
+     * 
+     * @param boolean $firstElement
+     * @return Element
+     */
+    public function setElementAsFirst($firstElement)
     {
         $this->firstElement = $firstElement;
-        
         return $this;
     }
     
-    public function getFirstElement()
+    /**
+     * Checks if the element is first Element
+     * 
+     * @return boolean
+     */
+    public function isFirstElement()
     {
         return $this->firstElement;
-    }
-    
-    public function setType($type)
-    {
-        $this->type = $type;
-        
-        return $this;
-    }
-    
-    public function getType()
-    {
-        return $this->type;
     }
 }

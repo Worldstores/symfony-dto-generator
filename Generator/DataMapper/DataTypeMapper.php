@@ -7,23 +7,31 @@ namespace WsSys\DtoGeneratorBundle\Generator\DataMapper;
  */
 class DataTypeMapper
 {
+    /**
+     * List of mappings
+     * 
+     * @var array 
+     */
+    protected static $xsdToDtoMapping = array(
+        'xs:string' => 'string',
+        'xs:date' => 'DateTime',
+        'xs:datetime' => 'DateTime',
+        'xs:integer' => 'integer',
+        'xs:decimal' => 'double',
+        'xs:positiveInteger' => 'integer'
+        );
     
     /**
      * Maps Data Type from Xsd to Dto
+     * 
      * @param string $xsdType
+     * 
      * @return string
      */
     public static function XsdToDto($xsdType)
     {
-        $mappings = array('xs:string' => 'string',
-            'xs:date' => 'DateTime',
-            'xs:datetime' => 'DateTime',
-            'xs:integer' => 'integer', 
-            'xs:decimal' => 'double',
-            'xs:positiveInteger' => 'integer');
-        
-        if (array_key_exists($xsdType, $mappings)) {
-            return $mappings[$xsdType];
+        if (array_key_exists($xsdType, self::$xsdToDtoMapping)) {
+            return self::$xsdToDtoMapping[$xsdType];
         }
         return 'Unknown';
     }

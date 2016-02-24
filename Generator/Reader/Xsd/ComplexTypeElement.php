@@ -3,7 +3,7 @@
 namespace WsSys\DtoGeneratorBundle\Generator\Reader\Xsd;
 
 /**
- * Element Which will help to create a DTO
+ * Element Which has children element..
  */
 class ComplexTypeElement extends Element
 {
@@ -12,7 +12,12 @@ class ComplexTypeElement extends Element
      */
     protected $children = array();
     
-    
+    /**
+     * Add a child to the element
+     * 
+     * @param Element $child
+     * @return ComplexTypeElement
+     */
     public function addChild($child)
     {
         $this->children[] = $child;
@@ -20,17 +25,42 @@ class ComplexTypeElement extends Element
         return $this;
     }
     
+    /**
+     * Set Children Elements for the element
+     * @param array $children
+     * 
+     * @return ComplexTypeElement
+     */
     public function setChildren($children)
     {
         $this->children = $children;
-        
+
         return $this;
     }
     
+    /**
+     * Get all the children Element
+     * 
+     * @return array
+     */
     public function getChildren()
     {
         return $this->children;
     }
     
-    
+    /**
+     * Returns only Children which has complex element children
+     * 
+     * @return array
+     */
+    public function getComplexElementChildren()
+    {
+        $retval = array();
+        foreach ($this->children as $child) {
+            if ($child instanceof ComplexTypeElement) {
+                $retval[] = $child;
+            }
+        }
+        return $retval;
+    }
 }
