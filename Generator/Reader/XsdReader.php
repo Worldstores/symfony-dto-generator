@@ -59,20 +59,18 @@ class XsdReader
      * @param DOMNode $parentNode
      * @param Element $parentElement
      */
-    public function addChildrenElements($parentNode, &$parentElement) 
+    protected function addChildrenElements($parentNode, &$parentElement) 
     {
         $children = $parentNode->childNodes;
 
         foreach ($children as $node) {
             if ($node->nodeType === XML_ELEMENT_NODE) {
-                $localName = $node->localName;
-                
-                switch ($localName) {
+                switch ($node->localName) {
                     case 'complexType':
                     case 'all':
                     case 'sequence':
                         /**
-                         * Recursively looking at element(localname) node
+                         * Recursively looking at element(localName=element)node
                          */
                         $this->addChildrenElements($node, $parentElement);
                         break;

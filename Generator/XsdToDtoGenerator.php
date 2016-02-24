@@ -6,8 +6,6 @@ use Sensio\Bundle\GeneratorBundle\Generator\Generator;
 use WsSys\DtoGeneratorBundle\Exception\InvalidArgumentException;
 use WsSys\DtoGeneratorBundle\Generator\Reader\XsdReader;
 
-use Symfony\Component\Filesystem\Filesystem;
-
 /**
  * Generate the Dtos from Xsd
  */
@@ -40,21 +38,6 @@ class XsdToDtoGenerator extends Generator
      * @var string 
      */
     protected $target;
-    
-    /**
-     * @var Filesystem
-     */
-    protected $filesystem;
-    
-    /**
-     * Constructor.
-     *
-     * @param Filesystem $filesystem A Filesystem instance
-     */
-    public function __construct(Filesystem $filesystem)
-    {
-        $this->filesystem  = $filesystem;
-    }
     
     /**
      * Sets the source
@@ -181,7 +164,7 @@ class XsdToDtoGenerator extends Generator
     {
         foreach ($firstElementWithChildren->getChildren() as $element) {
             if ($element instanceof Reader\Xsd\ComplexTypeElement) {
-                $element->setType($this->getTypeForChildDto($element));
+                $element->setDataType($this->getTypeForChildDto($element));
                 $this->genereateDTOClasses($element, $forceOverwrite);
             }
         }

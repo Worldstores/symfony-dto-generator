@@ -1,10 +1,14 @@
 <?php
 
-namespace WsSys\DtoGeneratorBundle\Tests\Generator;
+namespace WsSys\DtoGeneratorBundle\Tests\Functional\Generator;
 
 use WsSys\DtoGeneratorBundle\Generator\XsdToDtoGenerator;
-use org\bovigo\vfs\vfsStream;
 
+/**
+ * Test by creating real file. It is useful when trying to look at the output (for development)
+ * 
+ * @group functional
+ */
 class XsdToDtoGeneratorTest extends \PhpUnit_Framework_TestCase
 {
     
@@ -16,21 +20,14 @@ class XsdToDtoGeneratorTest extends \PhpUnit_Framework_TestCase
     
     private $destinationNS;
     
-    /**
-     * @type  vfsStreamDirectory
-     */
-    protected $root;
-    
     public function setUp() 
     {
-        $this->source = __DIR__ . '/XSD/PO.xsd';
-        $this->destinationNS = 'WsSys\DtoGeneratorBundle\Tests\Generator\DTO';
+        $this->source = __DIR__ . '/../../Generator/XSD/PO.xsd';
+        $this->destination = __DIR__ . '/../DTO';
+        $this->destinationNS = 'WsSys\DtoGeneratorBundle\Tests\Functional\DTO';
+        
         $this->generator = new XsdToDtoGenerator();
         $this->generator->setSkeletonDirs($this->getSkeletonDirs());
-        
-        $this->root = vfsStream::setup('dtoTest');
-        $this->createDestinationDir(vfsStream::url('dtoTest'));
-        
         parent::setUp();
     }
     
@@ -93,20 +90,7 @@ class XsdToDtoGeneratorTest extends \PhpUnit_Framework_TestCase
     protected function getSkeletonDirs()
     {
         $skeletonDirs = array();
-        $skeletonDirs[] = __DIR__.'/../../Resources/skeleton';
+        $skeletonDirs[] = __DIR__.'/../../../Resources/skeleton';
         return $skeletonDirs;
-    }
-    
-    /**
-     * creates the directory using vfsStream
-     *
-     * @param  string  $directory
-     */
-    public function createDestinationDir($directory)
-    {
-        $this->destination = $directory . DIRECTORY_SEPARATOR . 'DTO';
-        if (file_exists($this->directory) === false) {
-            mkdir($this->destination, 0700, true);
-        }
     }
 }

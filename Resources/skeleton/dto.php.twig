@@ -17,8 +17,8 @@ class {{ element.ucfirstName }}
 {
     {% for node in element.children %}
 /**
-     * @var {{ node.type }}
-     * @Annotation\Type("{{ node.type }}")
+     * @var {{ node.dataType }}
+     * @Annotation\Type("{{ node.dataType }}")
      * @Annotation\SerializedName("{{ node.name }}")
      * @Annotation\XmlElement(cdata=false)
      */
@@ -37,7 +37,7 @@ class {{ element.ucfirstName }}
 /**
      * Set {{ node.name }}
      *
-     * @param {{ node.type }} ${{ node.name }}
+     * @param {{ node.dataType }} ${{ node.name }}
      *
      * @return {{ element.ucfirstName }}
      */
@@ -51,7 +51,7 @@ class {{ element.ucfirstName }}
     /**
      * Get {{ node.name }}
      *
-     * @return {{ node.type }}
+     * @return {{ node.dataType }}
      */
     public function get{{ node.ucfirstName }}()
     {
