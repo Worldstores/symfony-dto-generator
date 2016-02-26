@@ -145,7 +145,8 @@ class XsdToDtoGenerator extends Generator
      */
     protected function setTargetFile($elementName)
     {
-        $this->target = sprintf("{$this->destination}/%s.%s", $elementName, $this->format);
+        $this->target = sprintf("%s/%s.%s", $this->destination, $elementName, $this->format);
+        
         return $this;
     }
 

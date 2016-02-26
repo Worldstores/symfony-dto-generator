@@ -23,7 +23,7 @@ class XsdToDtoGeneratorTest extends \PhpUnit_Framework_TestCase
     public function setUp() 
     {
         $this->source = __DIR__ . '/../../Generator/XSD/PO.xsd';
-        $this->destination = __DIR__ . '/../DTO';
+        $this->destination = __DIR__ . '/../../Temp/Generated/DTO';
         $this->destinationNS = 'WsSys\DtoGeneratorBundle\Tests\Functional\DTO';
         
         $this->generator = new XsdToDtoGenerator();

@@ -2,8 +2,6 @@
 
 namespace WsSys\DtoGeneratorBundle\Command;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
@@ -15,7 +13,7 @@ use WsSys\DtoGeneratorBundle\Generator\XsdToDtoGenerator;
 /**
  * Command to generate the Dtos
  */
-class GenerateDtoCommand extends GeneratorCommand implements ContainerAwareInterface
+class GenerateDtoCommand extends GeneratorCommand
 {
     /**
      * All the supported Types eg: xsd, json
@@ -24,17 +22,13 @@ class GenerateDtoCommand extends GeneratorCommand implements ContainerAwareInter
     protected $supportedTypes = array('xsd');
     
     /**
-     * @var ContainerInterface 
-     */
-    protected $container;
-    
-    /**
      * @see Console\Command\Command
      */
     protected function configure()
     {
     	$this
-        ->setName('generate:dto')
+        ->setName('ws:generator:generate:dto')
+        ->setAliases(array('ws:generator:dto:generate'))
         ->setDescription('Convert Xml/Json into PHP.')
         ->setDefinition(array(
             new InputArgument(
@@ -44,35 +38,13 @@ class GenerateDtoCommand extends GeneratorCommand implements ContainerAwareInter
                 'destination', InputArgument::REQUIRED, 'The path to save DTOs.'
             ),
             new InputArgument(
-                'destinationNS', InputArgument::REQUIRED, 'The target namespace for DTOs'
+                'destination-namespace', InputArgument::REQUIRED, 'The target namespace for DTOs'
             ),
             new InputArgument(
-                'type', InputArgument::REQUIRED, 'The path to save DTOs.'
+                'src-type', InputArgument::REQUIRED, 'The type of the source eg: XSD'
             ),
         ))
         ->setHelp("Generate DTOs from Given source (Json/Xml).");
-
-    }
-    
-    /**
-     * Sets the container 
-     * 
-     * @param ContainerInterface $container
-     */
-    public function setContainer(ContainerInterface $container = null)
-    {
-    	$this->container = $container;
-    }
-    
-    /**
-     * @return ContainerInterface
-     */
-    protected function getContainer()
-    {
-    	if (null === $this->container) {
-    		$this->container = $this->getApplication()->getKernel()->getContainer();
-    	}
-    	return $this->container;
     }
     
     /**
@@ -84,15 +56,15 @@ class GenerateDtoCommand extends GeneratorCommand implements ContainerAwareInter
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $type = $input->getArgument('type');
+        $type = $input->getArgument('src-type');
         
         if (!in_array($type, $this->supportedTypes)) {
-            throw new \Exception('We don\'t know yet, how to generate DTOs from ' . $type . '.');
+            throw new \LogicException('We don\'t know yet, how to generate DTOs from ' . $type . '.');
         }
         
         $src = $input->getArgument('source');
         $destination = $input->getArgument('destination');
-        $destinationNS = $input->getArgument('destinationNS');
+        $destinationNS = $input->getArgument('destination-namespace');
 
         if (!is_dir($destination)) {
             throw new \Exception("Destination must be a directory.");
@@ -104,7 +76,7 @@ class GenerateDtoCommand extends GeneratorCommand implements ContainerAwareInter
                     ->setDestinationNS($destinationNS)
                     ->generate();
                 
-        echo 'Generated All the DTOs';
+        $output->writeln('Generated All the DTOs');
     }
     
     /**

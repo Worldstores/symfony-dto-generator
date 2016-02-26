@@ -55,12 +55,12 @@ class ComplexTypeElement extends Element
      */
     public function getComplexElementChildren()
     {
-        $retval = array();
+        $complexTypeElements = array();
         foreach ($this->children as $child) {
             if ($child instanceof ComplexTypeElement) {
-                $retval[] = $child;
+                $complexTypeElements[] = $child;
             }
         }
-        return $retval;
+        return $complexTypeElements;
     }
 }

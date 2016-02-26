@@ -2,8 +2,8 @@
 
 namespace WsSys\DtoGeneratorBundle\Generator\Reader;
 
-use WsSys\DtoGeneratorBundle\Generator\Reader\Xsd\Element;
-use WsSys\DtoGeneratorBundle\Generator\DataMapper\DataTypeMapper;
+use WsSys\DtoGeneratorBundle\Generator\Reader;
+use WsSys\DtoGeneratorBundle\Generator\DataMapper;
 
 /**
  * Reads Xsd and it's elements
@@ -41,7 +41,7 @@ class XsdReader
         $nodes = $this->start->childNodes;
         foreach ($nodes as $node) {
             if ($node->nodeType === XML_ELEMENT_NODE) {
-                $element = new \WsSys\DtoGeneratorBundle\Generator\Reader\Xsd\ComplexTypeElement();
+                $element = new Reader\Xsd\ComplexTypeElement();
                 $element->setName($node->getAttribute('name'))
                         ->setElementAsFirst(true);
                 
@@ -76,17 +76,17 @@ class XsdReader
                         break;
                     case 'element':
                         if ($this->isComplexTypeNode($node)) {
-                            $element = new \WsSys\DtoGeneratorBundle\Generator\Reader\Xsd\ComplexTypeElement();
+                            $element = new Reader\Xsd\ComplexTypeElement();
                             $element->setName($node->getAttribute('name'));
                             $this->setComplexTypeChildrenRecursively($node, $element);
                             
                             $parentElement->addChild($element);
                         } else {
-                            $element = new \WsSys\DtoGeneratorBundle\Generator\Reader\Xsd\Element();
+                            $element = new Reader\Xsd\Element();
                             $element->setName($node->getAttribute('name'));
 
                             if ($node->getAttribute('type')) {
-                                $element->setDataType(DataTypeMapper::XsdToDto($node->getAttribute('type')));
+                                $element->setDataType(DataMapper\DataTypeMapper::XsdToDto($node->getAttribute('type')));
                             } else {
                                 $this->setElementsDataType($node, $element);
                             }
@@ -115,7 +115,7 @@ class XsdReader
             if ($localName == 'simpleType') {
                 $this->setElementsDataType($childNode, $element);
             } elseif ($localName == 'restriction' ) {
-                $element->setDataType(DataTypeMapper::XsdToDto($childNode->getAttribute('base')));
+                $element->setDataType(DataMapper\DataTypeMapper::XsdToDto($childNode->getAttribute('base')));
                 return;
             } else {
                 continue;
