@@ -1,14 +1,14 @@
 <?php
 
-namespace WsSys\DtoGeneratorBundle\Generator\Reader;
+namespace WsSys\DtoGeneratorBundle\Generator\Parser;
 
-use WsSys\DtoGeneratorBundle\Generator\Reader;
+use WsSys\DtoGeneratorBundle\Generator\Parser;
 use WsSys\DtoGeneratorBundle\Generator\DataMapper;
 
 /**
  * Reads Xsd and it's elements
  */
-class XsdReader
+class XsdParser
 {
     /**
      * @var \DOMDocument 
@@ -24,7 +24,7 @@ class XsdReader
      * Reads the XSD from given source
      * @param string $source
      */
-    public function read($source)
+    public function parse($source)
     {
         $this->dom = new \DOMDocument();
         $this->dom->load($source);
@@ -41,7 +41,7 @@ class XsdReader
         $nodes = $this->start->childNodes;
         foreach ($nodes as $node) {
             if ($node->nodeType === XML_ELEMENT_NODE) {
-                $element = new Reader\Xsd\ComplexTypeElement();
+                $element = new Parser\Xsd\ComplexTypeElement();
                 $element->setName($node->getAttribute('name'))
                         ->setElementAsFirst(true);
                 
@@ -76,13 +76,13 @@ class XsdReader
                         break;
                     case 'element':
                         if ($this->isComplexTypeNode($node)) {
-                            $element = new Reader\Xsd\ComplexTypeElement();
+                            $element = new Parser\Xsd\ComplexTypeElement();
                             $element->setName($node->getAttribute('name'));
                             $this->setComplexTypeChildrenRecursively($node, $element);
                             
                             $parentElement->addChild($element);
                         } else {
-                            $element = new Reader\Xsd\Element();
+                            $element = new Parser\Xsd\Element();
                             $element->setName($node->getAttribute('name'));
 
                             if ($node->getAttribute('type')) {

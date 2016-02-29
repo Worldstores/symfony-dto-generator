@@ -1,6 +1,6 @@
 <?php
 
-namespace WsSys\DtoGeneratorBundle\Generator\Reader\Xsd;
+namespace WsSys\DtoGeneratorBundle\Generator\Parser\Xsd;
 
 /**
  * Element Which will help to create a DTO

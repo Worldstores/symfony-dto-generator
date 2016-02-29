@@ -1,33 +1,33 @@
 <?php
 
-namespace WsSys\DtoGeneratorBundle\Tests\Generator\Reader;
+namespace WsSys\DtoGeneratorBundle\Tests\Generator\Parser;
 
-use WsSys\DtoGeneratorBundle\Generator\Reader\XsdReader;
+use WsSys\DtoGeneratorBundle\Generator\Parser\XsdParser;
 
 
-class XsdReaderTest extends \PhpUnit_Framework_TestCase
+class XsdParserTest extends \PhpUnit_Framework_TestCase
 {
     /**
-     * @var Reader 
+     * @var Parser 
      */
-    private $reader;
+    private $parser;
     
     private $source;
         
     public function setUp() 
     {
         $this->source = __DIR__ . '/../XSD/PO.xsd';
-        $this->reader = new XsdReader();
+        $this->parser = new XsdParser();
         parent::setUp();
     }
     
     public function testGetFirstElementWithChildrenReturnElementsWithItsChildren()
     {
-        $this->reader->read($this->source);
-        $retval = $this->reader->getFirstElementWithChildren();
+        $this->parser->parse($this->source);
+        $retval = $this->parser->getFirstElementWithChildren();
         
         $this->assertCount(12, $retval->getChildren());
-        $this->assertInstanceOf('WsSys\DtoGeneratorBundle\Generator\Reader\Xsd\Element', $retval->getChildren()[0]);
+        $this->assertInstanceOf('WsSys\DtoGeneratorBundle\Generator\Parser\Xsd\Element', $retval->getChildren()[0]);
         $this->assertCount(3, $retval->getComplexElementChildren());
         
         $this->assertEquals('clientOrderId', $retval->getChildren()[0]->getName());

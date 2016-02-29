@@ -4,7 +4,7 @@ namespace WsSys\DtoGeneratorBundle\Generator;
 
 use Sensio\Bundle\GeneratorBundle\Generator\Generator;
 use WsSys\DtoGeneratorBundle\Exception\InvalidArgumentException;
-use WsSys\DtoGeneratorBundle\Generator\Reader\XsdReader;
+use WsSys\DtoGeneratorBundle\Generator\Parser\XsdParser;
 
 /**
  * Generate the Dtos from Xsd
@@ -131,10 +131,10 @@ class XsdToDtoGenerator extends Generator
             throw new InvalidArgumentException('DestinationNamespace');
         }
 
-        $reader = new XsdReader();
-        $reader->read($source);
+        $parser = new XsdParser();
+        $parser->parse($source);
         
-        $firstElement = $reader->getFirstElementWithChildren();
+        $firstElement = $parser->getFirstElementWithChildren();
         $this->genereateDTOClasses($firstElement, $forceOverwrite);
     }
     
@@ -159,7 +159,7 @@ class XsdToDtoGenerator extends Generator
     protected function genereateDTOClasses($firstElementWithChildren, $forceOverwrite)
     {
         foreach ($firstElementWithChildren->getChildren() as $element) {
-            if ($element instanceof Reader\Xsd\ComplexTypeElement) {
+            if ($element instanceof Parser\Xsd\ComplexTypeElement) {
                 $element->setDataType($this->getTypeForChildDto($element));
                 $this->genereateDTOClasses($element, $forceOverwrite);
             }
