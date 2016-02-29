@@ -4,12 +4,12 @@ namespace WsSys\DtoGeneratorBundle\Generator;
 
 use Sensio\Bundle\GeneratorBundle\Generator\Generator;
 use WsSys\DtoGeneratorBundle\Exception\InvalidArgumentException;
-use WsSys\DtoGeneratorBundle\Generator\Parser\XsdParser;
+use WsSys\DtoGeneratorBundle\Generator\Parser\JsonSchemaParser;
 
 /**
- * Generate the Dtos from Xsd
+ * Generate the Dtos from Json
  */
-class XsdToDtoGenerator extends Generator
+class JsonSchemaToDtoGenerator extends Generator
 {
     /**
      * Source file location
@@ -30,7 +30,7 @@ class XsdToDtoGenerator extends Generator
      * 
      * @var string 
      */
-    protected $destinationNamaspace;
+    protected $destinationNamespace;
     
     /**
      * Target File
@@ -44,7 +44,7 @@ class XsdToDtoGenerator extends Generator
      * 
      * @param string $source
      * 
-     * @return XsdToDtoGenerator
+     * @return JsonToDtoGenerator
      */
     public function setSource($source) 
     {
@@ -67,7 +67,7 @@ class XsdToDtoGenerator extends Generator
      * 
      * @param string $destination
      * 
-     * @return XsdToDtoGenerator
+     * @return JsonToDtoGenerator
      */
     public function setDestination($destination) 
     {
@@ -88,13 +88,13 @@ class XsdToDtoGenerator extends Generator
     /**
      * Sets the destination Namespace
      * 
-     * @param string $destinationNamespace
+     * @param string $destinationNS
      * 
-     * @return XsdToDtoGenerator
+     * @return JsonToDtoGenerator
      */
-    public function setDestinationNamespace($destinationNamespace) 
+    public function setDestinationNamespace($destinationNS) 
     {
-        $this->destinationNamespace = $destinationNamespace;
+        $this->destinationNamespace = $destinationNS;
         return $this;
     }
 
@@ -111,7 +111,6 @@ class XsdToDtoGenerator extends Generator
     /**
      * Generates the DTOs
      * 
-     * @param boolean $forceOverwrite
      * @throws InvalidArgumentException
      */
     public function generate($forceOverwrite = true)
@@ -126,12 +125,12 @@ class XsdToDtoGenerator extends Generator
             throw new InvalidArgumentException('Destination');
         }
         
-        $destinationNamespace = $this->getDestinationNamespace();
-        if (!$destinationNamespace) {
+        $destinationNS = $this->getDestinationNamespace();
+        if (!$destinationNS) {
             throw new InvalidArgumentException('DestinationNamespace');
         }
 
-        $parser = new XsdParser();
+        $parser = new JsonSchemaParser();
         $parser->parse($source);
         
         $firstElement = $parser->getFirstElementWithChildren();
@@ -150,12 +149,6 @@ class XsdToDtoGenerator extends Generator
         return $this;
     }
     
-    /**
-     * Generates DTO Classes
-     * 
-     * @param Element $firstElementWithChildren
-     * @param boolean $forceOverwrite
-     */
     protected function genereateDTOClasses($firstElementWithChildren, $forceOverwrite)
     {
         foreach ($firstElementWithChildren->getChildren() as $element) {
@@ -170,15 +163,13 @@ class XsdToDtoGenerator extends Generator
 
     /**
      * Creates a file
-     * 
      * @param Element $element
-     * @param boolean $forceOverwrite
      * @throws \LogicException
      */
     protected function generateDTOClass($element, $forceOverwrite)
     {
         if (!$forceOverwrite && is_file($this->target)) {
-            throw new \LogicException('File already exists and you have not asked to overwrite.');
+            throw new \LogicException ('File already exists and you have not asked to overwrite.');
         }
         
         $this->renderFile('dto.php.twig', $this->target, array(

@@ -27,7 +27,7 @@ class XsdParserTest extends \PhpUnit_Framework_TestCase
         $retval = $this->parser->getFirstElementWithChildren();
         
         $this->assertCount(12, $retval->getChildren());
-        $this->assertInstanceOf('WsSys\DtoGeneratorBundle\Generator\Parser\Xsd\Element', $retval->getChildren()[0]);
+        $this->assertInstanceOf('WsSys\DtoGeneratorBundle\Generator\Parser\Element\Element', $retval->getChildren()[0]);
         $this->assertCount(3, $retval->getComplexElementChildren());
         
         $this->assertEquals('clientOrderId', $retval->getChildren()[0]->getName());

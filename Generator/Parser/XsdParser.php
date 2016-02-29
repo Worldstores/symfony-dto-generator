@@ -4,11 +4,12 @@ namespace WsSys\DtoGeneratorBundle\Generator\Parser;
 
 use WsSys\DtoGeneratorBundle\Generator\Parser;
 use WsSys\DtoGeneratorBundle\Generator\DataMapper;
+use WsSys\DtoGeneratorBundle\Generator\Parser\Interfaces\ParserInterface;
 
 /**
  * Reads Xsd and it's elements
  */
-class XsdParser
+class XsdParser implements ParserInterface
 {
     /**
      * @var \DOMDocument 
@@ -41,7 +42,7 @@ class XsdParser
         $nodes = $this->start->childNodes;
         foreach ($nodes as $node) {
             if ($node->nodeType === XML_ELEMENT_NODE) {
-                $element = new Parser\Xsd\ComplexTypeElement();
+                $element = new Parser\Element\ComplexTypeElement();
                 $element->setName($node->getAttribute('name'))
                         ->setElementAsFirst(true);
                 
@@ -76,7 +77,7 @@ class XsdParser
                         break;
                     case 'element':
                         if ($this->isComplexTypeNode($node)) {
-                            $element = new Parser\Xsd\ComplexTypeElement();
+                            $element = new Parser\Element\ComplexTypeElement();
                             $element->setName($node->getAttribute('name'));
                             $this->setComplexTypeChildrenRecursively($node, $element);
                             

@@ -1,6 +1,6 @@
 <?php
 
-namespace WsSys\DtoGeneratorBundle\Generator\Parser\Xsd;
+namespace WsSys\DtoGeneratorBundle\Generator\Parser\Element;
 
 /**
  * Element Which has children element..
