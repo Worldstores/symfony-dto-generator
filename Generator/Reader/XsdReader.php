@@ -93,8 +93,6 @@ class XsdReader
                             $parentElement->addChild($element);
                         }
                         break;
-                    default:
-                        break;
                 }
             }
         }
@@ -117,8 +115,6 @@ class XsdReader
             } elseif ($localName == 'restriction' ) {
                 $element->setDataType(DataMapper\DataTypeMapper::XsdToDto($childNode->getAttribute('base')));
                 return;
-            } else {
-                continue;
             }
         }
     }

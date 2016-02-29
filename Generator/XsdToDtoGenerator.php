@@ -30,7 +30,7 @@ class XsdToDtoGenerator extends Generator
      * 
      * @var string 
      */
-    protected $destinationNS;
+    protected $destinationNamaspace;
     
     /**
      * Target File
@@ -88,13 +88,13 @@ class XsdToDtoGenerator extends Generator
     /**
      * Sets the destination Namespace
      * 
-     * @param string $destinationNS
+     * @param string $destinationNamespace
      * 
      * @return XsdToDtoGenerator
      */
-    public function setDestinationNS($destinationNS) 
+    public function setDestinationNamespace($destinationNamespace) 
     {
-        $this->destinationNS = $destinationNS;
+        $this->destinationNamespace = $destinationNamespace;
         return $this;
     }
 
@@ -103,19 +103,19 @@ class XsdToDtoGenerator extends Generator
      * 
      * @return string
      */
-    public function getDestinationNS() 
+    public function getDestinationNamespace() 
     {
-        return $this->destinationNS;
+        return $this->destinationNamespace;
     }
 
     /**
      * Generates the DTOs
      * 
+     * @param boolean $forceOverwrite
      * @throws InvalidArgumentException
      */
-    public function generate($forceOverwrite = true, $format = 'php')
+    public function generate($forceOverwrite = true)
     {
-        $this->setFormat($format);
         $source = $this->getSource();
         if (!$source) {
             throw new InvalidArgumentException('Source');
@@ -126,9 +126,9 @@ class XsdToDtoGenerator extends Generator
             throw new InvalidArgumentException('Destination');
         }
         
-        $destinationNS = $this->getDestinationNS();
-        if (!$destinationNS) {
-            throw new InvalidArgumentException('DestinationNS');
+        $destinationNamespace = $this->getDestinationNamespace();
+        if (!$destinationNamespace) {
+            throw new InvalidArgumentException('DestinationNamespace');
         }
 
         $reader = new XsdReader();
@@ -145,22 +145,17 @@ class XsdToDtoGenerator extends Generator
      */
     protected function setTargetFile($elementName)
     {
-        $this->target = sprintf("%s/%s.%s", $this->destination, $elementName, $this->format);
+        $this->target = sprintf("%s/%s.%s", $this->destination, $elementName, 'php');
         
         return $this;
     }
-
+    
     /**
-     * Sets the configuration format.
-     *
-     * @param string $format The configuration format
+     * Generates DTO Classes
+     * 
+     * @param Element $firstElementWithChildren
+     * @param boolean $forceOverwrite
      */
-    protected function setFormat($format)
-    {
-        $this->format = $format;
-    }
-    
-    
     protected function genereateDTOClasses($firstElementWithChildren, $forceOverwrite)
     {
         foreach ($firstElementWithChildren->getChildren() as $element) {
@@ -175,17 +170,19 @@ class XsdToDtoGenerator extends Generator
 
     /**
      * Creates a file
+     * 
      * @param Element $element
-     * @throws \RuntimeException
+     * @param boolean $forceOverwrite
+     * @throws \LogicException
      */
     protected function generateDTOClass($element, $forceOverwrite)
     {
         if (!$forceOverwrite && is_file($this->target)) {
-            throw new \Exception ('File already exists and you have not asked to overwrite.');
+            throw new \LogicException('File already exists and you have not asked to overwrite.');
         }
         
         $this->renderFile('dto.php.twig', $this->target, array(
-            'namespace' => $this->destinationNS,
+            'namespace' => $this->destinationNamespace,
             'element' => $element
         ));
     }
@@ -197,6 +194,6 @@ class XsdToDtoGenerator extends Generator
      */
     protected function getTypeForChildDto($element)
     {
-        return $this->destinationNS . '\\' . ucfirst($element->getName());
+        return $this->destinationNamespace . '\\' . ucfirst($element->getName());
     }
 }

@@ -24,7 +24,7 @@ class XsdToDtoGeneratorTest extends \PhpUnit_Framework_TestCase
     public function setUp() 
     {
         $this->source = __DIR__ . '/XSD/PO.xsd';
-        $this->destinationNS = 'WsSys\DtoGeneratorBundle\Tests\Generator\DTO';
+        $this->destinationNS = 'WsSys\DtoGeneratorBundle\Tests\Temp\Generated\DTO';
         $this->generator = new XsdToDtoGenerator();
         $this->generator->setSkeletonDirs($this->getSkeletonDirs());
         
@@ -47,7 +47,7 @@ class XsdToDtoGeneratorTest extends \PhpUnit_Framework_TestCase
     public function testGenerateThrowsAnExceptionWhenDestinationDirIsNotProvided()
     {
         $this->generator->setSource($this->source)
-                ->setDestinationNS($this->destinationNS);
+                ->setDestinationNamespace($this->destinationNS);
         $this->generator->generate();
     }
     
@@ -57,14 +57,14 @@ class XsdToDtoGeneratorTest extends \PhpUnit_Framework_TestCase
      */
     public function testGenerateThrowsAnExceptionWhenSourceIsNotProvided()
     {
-        $this->generator->setDestinationNS($this->destinationNS)
+        $this->generator->setDestinationNamespace($this->destinationNS)
                 ->setDestination($this->destination);
         $this->generator->generate();
     }
     
     /**
      * @expectedException WsSys\DtoGeneratorBundle\Exception\InvalidArgumentException
-     * @expectedExceptionMessage Invalid argument or argument 'DestinationNS' not provided.
+     * @expectedExceptionMessage Invalid argument or argument 'DestinationNamespace' not provided.
      */
     public function testGenerateThrowsAnExceptionWhenDestinationNSIsNotProvided()
     {
@@ -78,10 +78,10 @@ class XsdToDtoGeneratorTest extends \PhpUnit_Framework_TestCase
     {
         $this->generator->setSource($this->source)
                 ->setDestination($this->destination)
-                ->setDestinationNS($this->destinationNS);
+                ->setDestinationNamespace($this->destinationNS);
         
         $this->generator->generate();
-        $this->assertFileExists($this->destination . '/VendorOrder.php');
+        $this->assertFileExists($this->destination . '/ClientOrder.php');
     }
     
     /**

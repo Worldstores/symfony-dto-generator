@@ -18,7 +18,8 @@ class DataTypeMapper
         'xs:datetime' => 'DateTime',
         'xs:integer' => 'integer',
         'xs:decimal' => 'double',
-        'xs:positiveInteger' => 'integer'
+        'xs:positiveInteger' => 'integer',
+        'xs:boolean' => 'boolean'
         );
     
     /**

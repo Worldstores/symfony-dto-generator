@@ -73,7 +73,7 @@ class GenerateDtoCommand extends GeneratorCommand
         $generator = $this->getGenerator();
         $generator->setSource($src)
                     ->setDestination($destination)
-                    ->setDestinationNS($destinationNS)
+                    ->setDestinationNamespace($destinationNS)
                     ->generate();
                 
         $output->writeln('Generated All the DTOs');
