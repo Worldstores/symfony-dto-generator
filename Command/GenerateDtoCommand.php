@@ -8,7 +8,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console;
 use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 use Sensio\Bundle\GeneratorBundle\Command\GeneratorCommand;
-use WsSys\DtoGeneratorBundle\Generator\XsdToDtoGenerator;
+use WsSys\DtoGeneratorBundle\Generator;
 
 /**
  * Command to generate the Dtos
@@ -19,7 +19,14 @@ class GenerateDtoCommand extends GeneratorCommand
      * All the supported Types eg: xsd, json
      * @var array 
      */
-    protected $supportedTypes = array('xsd');
+    protected $supportedTypes = array('xsd', 'json');
+    
+    /**
+     * Type of the source
+     * 
+     * @var string 
+     */
+    protected $type;
     
     /**
      * @see Console\Command\Command
@@ -56,10 +63,10 @@ class GenerateDtoCommand extends GeneratorCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $type = $input->getArgument('src-type');
+        $this->type = $input->getArgument('src-type');
         
-        if (!in_array($type, $this->supportedTypes)) {
-            throw new \LogicException('We don\'t know yet, how to generate DTOs from ' . $type . '.');
+        if (!in_array($this->type, $this->supportedTypes)) {
+            throw new \LogicException('We don\'t know yet, how to generate DTOs from ' . $this->type . '.');
         }
         
         $src = $input->getArgument('source');
@@ -98,6 +105,11 @@ class GenerateDtoCommand extends GeneratorCommand
      */
     protected function createGenerator()
     {
-        return new XsdToDtoGenerator($this->getContainer()->get('filesystem'));
+        switch($this->type) {
+            case 'xsd':
+                return new Generator\XsdToDtoGenerator();
+            case 'json':
+                return new Generator\JsonSchemaToDtoGenerator();
+        }
     }
 }
