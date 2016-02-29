@@ -5,16 +5,14 @@
     "license":      "MIT",
     "keywords": ["converter", "xml", "xsd", "php", "symfony"],
     "require": {
-        "goetas/xsd2php": "^1.0",
-        "goetas/xsd-reader": "^1.0"
+        "sensio/generator-bundle": "~3.0",
+        "twig/twig": "1.8.2"
     },
     "require-dev": {
-        "sensio/generator-bundle": "~3.0",
         "phpunit/phpunit": "4.8.*",
         "symfony/phpunit-bridge": "~2.7",
         "mockery/mockery": "^0.9.4",
-        "mikey179/vfsStream": "~1.6",
-        "twig/twig": "1.8.2"
+        "mikey179/vfsStream": "~1.6"
     },
     "autoload": {
         "psr-4": { "WsSys\\DtoGeneratorBundle\\": "" }
