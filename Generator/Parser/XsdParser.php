@@ -83,7 +83,7 @@ class XsdParser implements ParserInterface
                             
                             $parentElement->addChild($element);
                         } else {
-                            $element = new Parser\Xsd\Element();
+                            $element = new Parser\Element\Element();
                             $element->setName($node->getAttribute('name'));
 
                             if ($node->getAttribute('type')) {
