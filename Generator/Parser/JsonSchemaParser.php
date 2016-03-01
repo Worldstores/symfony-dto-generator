@@ -24,12 +24,10 @@ class JsonSchemaParser implements ParserInterface
     public function parse($source)
     {
         $json = file_get_contents($source);
-        $jsonIterator = new \RecursiveIteratorIterator(
+        $this->start = new \RecursiveIteratorIterator(
                 new \RecursiveArrayIterator(json_decode($json, TRUE)), 
                 \RecursiveIteratorIterator::SELF_FIRST
             );
-
-        $this->start = $jsonIterator;
     }
     
     /**

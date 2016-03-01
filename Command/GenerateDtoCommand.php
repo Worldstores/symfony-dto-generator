@@ -48,7 +48,7 @@ class GenerateDtoCommand extends GeneratorCommand
                 'destination-namespace', InputArgument::REQUIRED, 'The target namespace for DTOs'
             ),
             new InputArgument(
-                'src-type', InputArgument::REQUIRED, 'The type of the source eg: XSD'
+                'src-type', InputArgument::REQUIRED, sprintf('The type of the source. Available types: %s', implode(', ', $this->supportedTypes))
             ),
         ))
         ->setHelp("Generate DTOs from Given source (Json/Xml).");
@@ -74,7 +74,7 @@ class GenerateDtoCommand extends GeneratorCommand
         $destinationNS = $input->getArgument('destination-namespace');
 
         if (!is_dir($destination)) {
-            throw new \Exception("Destination must be a directory.");
+            throw new \LogicException("Destination must be a directory.");
         }
         
         $generator = $this->getGenerator();

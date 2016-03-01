@@ -31,7 +31,7 @@ abstract class AbstractGenerator extends Generator
      * 
      * @var string 
      */
-    protected $destinationNamaspace;
+    protected $destinationNamespace;
     
     /**
      * Target File
@@ -111,8 +111,10 @@ abstract class AbstractGenerator extends Generator
     
     /**
      * Generates the DTOs
+     * 
+     * @param boolean $forceOverwrite | whether to overwrite existing file.
      */
-    abstract public function generate();
+    abstract public function generate($forceOverwrite = true);
     
     /**
      * Validates the Input 

@@ -48,9 +48,9 @@ class {{ element.ucfirstName }}
         return $this;
     }
     {% if node.dataType == 'boolean' %}
-        {% set getOrIs = 'is' %}
+        {% set methodPrefix = 'is' %}
     {% else %}
-        {% set getOrIs = 'get' %}
+        {% set methodPrefix = 'get' %}
     {% endif %}
     
     /**
@@ -58,7 +58,7 @@ class {{ element.ucfirstName }}
      *
      * @return {{ node.dataType }}
      */
-    public function {{ getOrIs }}{{ node.ucfirstName }}()
+    public function {{ methodPrefix }}{{ node.ucfirstName }}()
     {
         return $this->{{ node.name }};
     }
