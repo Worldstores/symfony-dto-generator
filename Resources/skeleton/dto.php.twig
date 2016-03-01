@@ -15,8 +15,8 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class {{ element.ucfirstName }}
 {
-    {% for node in element.children %}
-/**
+{% for node in element.children %}
+    /**
      * @var {{ node.dataType }}
      * @Annotation\Type("{{ node.dataType }}")
      * @Annotation\SerializedName("{{ node.name }}")
@@ -24,17 +24,17 @@ class {{ element.ucfirstName }}
      */
     private ${{ node.name }};
     
-    {% endfor %}
-    {% if element.firstElement == 1 %}
-/**
+{% endfor %}
+{% if element.firstElement == 1 %}
+    /**
      * @var string 
      * @Annotation\Exclude()
      */
     private $token;
-    {% endif %}
+{% endif %}
 
-    {% for node in element.children %}
-/**
+{% for node in element.children %}
+    /**
      * Set {{ node.name }}
      *
      * @param {{ node.dataType }} ${{ node.name }}
@@ -62,11 +62,10 @@ class {{ element.ucfirstName }}
     {
         return $this->{{ node.name }};
     }
-    
-    {% endfor %}
-    
-    {% if element.firstElement == 1 %}
-/**
+{% endfor %} 
+{% if element.firstElement == 1 %}
+
+    /**
      * Set token
      *
      * @param string $token
@@ -90,5 +89,4 @@ class {{ element.ucfirstName }}
         return $this->token;
     }
 {% endif %}
-
 }
