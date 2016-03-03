@@ -1,0 +1,46 @@
+<?php
+/**
+ * Controller for {{ dto_class }} operations
+ *
+ * @author Your.name <your@email.com>
+ * @package api
+ * @category controller
+ * @since {{ date_since }}
+ */
+
+namespace {{ bundle_namespace }}\Controller;
+
+{% block use_statements %}
+use FOS\RestBundle\Controller\Annotations;
+use FOS\RestBundle\Controller\FOSRestController;
+use FOS\RestBundle\View\View;
+use Symfony\Component\HttpFoundation;
+use {{ bundle_namespace }}\DTO;
+{% endblock use_statements %}
+
+/**
+{% block phpdoc_class_header %}
+ * {{ dto_class }} controller.
+{% endblock phpdoc_class_annotations %}
+ */
+{% block class_definition %}
+class {{ dto_class }}Controller extends FOSRestController
+{% endblock class_definition %}
+{
+{% block class_body %}
+    /**
+     * @param HttpFoundation\Request $request
+     *
+     * @return ApiResponse
+     *
+     * @Annotations\Post("/{{ dto_class|lower }}")
+     */
+    public function {{ dto_class }}Action(HttpFoundation\Request $request)
+    {
+        /*** @var ApiResponse $response */
+        $response = $this->get('{{ bundle_name }}.{{ dto_class }}')->process($request->getContent());
+
+        return View::create($response, $response->getHttpCode());
+    }
+{% endblock class_body %}
+}

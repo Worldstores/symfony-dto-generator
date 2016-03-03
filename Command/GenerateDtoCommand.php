@@ -50,6 +50,12 @@ class GenerateDtoCommand extends GeneratorCommand
             new InputArgument(
                 'src-type', InputArgument::REQUIRED, sprintf('The type of the source. Available types: %s', implode(', ', $this->supportedTypes))
             ),
+            new InputArgument(
+                'generate-controller', InputArgument::OPTIONAL, sprintf('set this option to 1 if you want to generate controllers too')
+            ),
+            new InputArgument(
+                'target-bundle', InputArgument::OPTIONAL, sprintf('The bundle where to generate the controller')
+            ),
         ))
         ->setHelp("Generate DTOs from Given source (Json/Xml).");
     }
@@ -59,7 +65,6 @@ class GenerateDtoCommand extends GeneratorCommand
      * 
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return type
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -78,12 +83,21 @@ class GenerateDtoCommand extends GeneratorCommand
         }
         
         $generator = $this->getGenerator();
-        $generator->setSource($src)
-                    ->setDestination($destination)
-                    ->setDestinationNamespace($destinationNS)
-                    ->generate();
+        $dto = $generator->setSource($src)
+                ->setDestination($destination)
+                ->setDestinationNamespace($destinationNS)
+                ->generate();
                 
         $output->writeln('Generated All the DTOs');
+        
+        /**
+         * Checks if Controller needs to be generated, and execute the generator
+         */
+        $generateController = $input->getArgument('generator-controller');
+        if ($generateController) {
+            $input->setArgument('dto', $dto);
+            $this->executeControllerGenerator($input, $output);
+        }
     }
     
     /**
@@ -111,5 +125,41 @@ class GenerateDtoCommand extends GeneratorCommand
             case 'json':
                 return new Generator\JsonSchemaToDtoGenerator();
         }
+    }
+
+    /**
+     * Execute Command To generate Controller
+     * 
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     */
+    protected function executeControllerGenerator(InputInterface $input, OutputInterface $output)
+    {
+        $targetBundle = $input->getArgument('target-bundle');
+
+        if (empty($targetBundle)) {
+            throw new \LogicException("Bunle is not provided. We don't know where to create the controller");
+        }
+        
+        $bundle = $this->getContainer()->get('kernel')->getBundle($targetBundle);
+        $dto = $input->getArgument('dto');
+        
+        $dataFormat = ($this->type === 'XSD') ? 'XML' : 'JSON';
+
+        $generator = $this->getControllerGenerator();
+        $generator->setBundle($bundle)
+                ->generate($dto, $dataFormat, TRUE);
+                
+        $output->writeln('Generated All the DTOs');
+    }
+    
+    /**
+     * Returns Controller Generator
+     * 
+     * @return Generator\ApiControllerGenerator
+     */
+    protected function getControllerGenerator()
+    {
+        return new GeneratorBundle\Generator\ApiControllerGenerator();
     }
 }

@@ -80,7 +80,8 @@ class JsonScehmaToDtoGeneratorTest extends \PhpUnit_Framework_TestCase
                 ->setDestination($this->destination)
                 ->setDestinationNamespace($this->destinationNS);
         
-        $this->generator->generate();
+        $firstElement = $this->generator->generate();
+        $this->assertEquals('RobotMe', $firstElement);
         $this->assertFileExists($this->destination . '/RobotMe.php');
     }
     

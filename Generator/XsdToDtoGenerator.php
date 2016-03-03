@@ -14,6 +14,8 @@ class XsdToDtoGenerator extends AbstractGenerator
      * 
      * @param boolean $forceOverwrite
      * @throws InvalidArgumentException
+     * 
+     * @return string
      */
     public function generate($forceOverwrite = true)
     {
@@ -24,5 +26,7 @@ class XsdToDtoGenerator extends AbstractGenerator
         
         $firstElement = $parser->getFirstElementWithChildren();
         $this->genereateDTOClasses($firstElement, $forceOverwrite);
+        
+        return $firstElement->getUcfirstName();
     }
 }

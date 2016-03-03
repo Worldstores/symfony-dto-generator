@@ -1,0 +1,10 @@
+Feature:
+    Manage {{ dto_class }}
+
+    Scenario: Add a new {{ dto_class }}
+        Given that I want to add "{{ dto_class|lower }}"
+        When I send a POST request to "{{ url }}" with body:
+            """
+            """
+        Then the response code should be 200
+        And the response should be in {{ format }}

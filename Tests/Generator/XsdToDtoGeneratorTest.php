@@ -80,7 +80,8 @@ class XsdToDtoGeneratorTest extends \PhpUnit_Framework_TestCase
                 ->setDestination($this->destination)
                 ->setDestinationNamespace($this->destinationNS);
         
-        $this->generator->generate();
+        $firstElement = $this->generator->generate();
+        $this->assertEquals('ClientOrder', $firstElement);
         $this->assertFileExists($this->destination . '/ClientOrder.php');
     }
     
