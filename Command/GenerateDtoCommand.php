@@ -39,7 +39,7 @@ class GenerateDtoCommand extends GeneratorCommand
         ->setDescription('Convert Xml/Json into PHP.')
         ->setDefinition(array(
             new InputArgument(
-                'src', InputArgument::REQUIRED, 'The path of the souce XSD or JSON.'
+                'source', InputArgument::REQUIRED, 'The path of the souce XSD or JSON.'
             ),
             new InputArgument(
                 'destination', InputArgument::REQUIRED, 'The path to save DTOs.'
@@ -93,10 +93,9 @@ class GenerateDtoCommand extends GeneratorCommand
         /**
          * Checks if Controller needs to be generated, and execute the generator
          */
-        $generateController = $input->getArgument('generator-controller');
+        $generateController = $input->getArgument('generate-controller');
         if ($generateController) {
-            $input->setArgument('dto', $dto);
-            $this->executeControllerGenerator($input, $output);
+            $this->executeControllerGenerator($input, $output, $dto);
         }
     }
     
@@ -133,7 +132,7 @@ class GenerateDtoCommand extends GeneratorCommand
      * @param InputInterface $input
      * @param OutputInterface $output
      */
-    protected function executeControllerGenerator(InputInterface $input, OutputInterface $output)
+    protected function executeControllerGenerator(InputInterface $input, OutputInterface $output, $dto)
     {
         $targetBundle = $input->getArgument('target-bundle');
 
@@ -142,13 +141,14 @@ class GenerateDtoCommand extends GeneratorCommand
         }
         
         $bundle = $this->getContainer()->get('kernel')->getBundle($targetBundle);
-        $dto = $input->getArgument('dto');
         
         $dataFormat = ($this->type === 'XSD') ? 'XML' : 'JSON';
 
         $generator = $this->getControllerGenerator();
-        $generator->setBundle($bundle)
-                ->generate($dto, $dataFormat, TRUE);
+        $generator->setDtoClassName($dto)
+                ->setDataFormat($dataFormat)
+                ->setBundle($bundle)
+                ->generate(TRUE);
                 
         $output->writeln('Generated All the DTOs');
     }
@@ -160,6 +160,6 @@ class GenerateDtoCommand extends GeneratorCommand
      */
     protected function getControllerGenerator()
     {
-        return new GeneratorBundle\Generator\ApiControllerGenerator();
+        return new Generator\ApiControllerGenerator();
     }
 }

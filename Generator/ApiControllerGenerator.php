@@ -5,7 +5,7 @@ namespace WsSys\DtoGeneratorBundle\Generator;
 /**
  * Generates Controller on the basis of Dto
  */
-class ApiControllerGenerator
+class ApiControllerGenerator extends AbstractGenerator
 {
     /**
      * Bundle where to generate the controller
@@ -13,6 +13,16 @@ class ApiControllerGenerator
      * @var string 
      */
     protected $bundle;
+    
+    /**
+     * @var string 
+     */
+    protected $dtoClassName;
+    
+    /**
+     * @var string 
+     */
+    protected $dataFormat = 'json';
     
     /**
      * Sets the bundle
@@ -38,18 +48,63 @@ class ApiControllerGenerator
     }
     
     /**
-     * Generates the Controller and some behat test features
+     * sets Dto Class name
      * 
      * @param string $dtoClassName
+     * @return ApiControllerGenerator
+     */
+    public function setDtoClassName($dtoClassName)
+    {
+        $this->dtoClassName = $dtoClassName;
+        
+        return $this;
+    }
+    
+    /**
+     * Returns Dto class name
+     * 
+     * @return string
+     */
+    public function getDtoClassName()
+    {
+        return $this->dtoClassName;
+    }
+    
+    /**
+     * Sets data format
+     * 
+     * @param string $dataFormat
+     * @return ApiControllerGenerator
+     */
+    public function setDataFormat($dataFormat)
+    {
+        $this->dataFormat = $dataFormat;
+        
+        return $this;
+    }
+    
+    /**
+     * Gets Data format
+     * 
+     * @return string
+     */
+    public function getDataFormat()
+    {
+        return $this->dataFormat;
+    }
+
+    /**
+     * Generates the Controller and some behat test features
+     * 
      * @param boolean $forceOverwrite
      */
-    public function generate($dtoClassName, $dataFormat = 'json', $forceOverwrite = true)
+    public function generate($forceOverwrite = true)
     {
         $dir = $this->bundle->getPath();
         $target = sprintf(
             '%s/Controller/%sController.php',
             $dir,
-            $dtoClassName
+            $this->dtoClassName
         );
 
         if (!$forceOverwrite && file_exists($target)) {
@@ -57,12 +112,12 @@ class ApiControllerGenerator
         }
 
         $this->renderFile('controller.php.twig', $target, array(
-            'dto_class'         => $dtoClassName,
+            'dto_class'         => $this->dtoClassName,
             'date_since'        => new \DateTime(),
             'bundle_namespace'  => $this->bundle->getNamespace(),
             'bundle_name'       => $this->bundle->getName()
         ));
-        $this->generateFeatures($dtoClassName, $dataFormat);
+        $this->generateFeatures($this->dtoClassName, $this->dataFormat);
     }
     
     /**
