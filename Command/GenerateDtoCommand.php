@@ -142,9 +142,10 @@ class GenerateDtoCommand extends GeneratorCommand
         
         $bundle = $this->getContainer()->get('kernel')->getBundle($targetBundle);
         
-        $dataFormat = ($this->type === 'XSD') ? 'XML' : 'JSON';
+        $dataFormat = (strtoupper($this->type) === 'XSD') ? 'XML' : 'JSON';
 
         $generator = $this->getControllerGenerator();
+        $generator->setSkeletonDirs($this->getSkeletonDirs());
         $generator->setDtoClassName($dto)
                 ->setDataFormat($dataFormat)
                 ->setBundle($bundle)

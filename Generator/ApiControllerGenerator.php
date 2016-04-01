@@ -111,9 +111,11 @@ class ApiControllerGenerator extends AbstractGenerator
             throw new \RuntimeException('Unable to generate the controller as it already exists.');
         }
 
+        $dateSince = new \DateTime();
+        
         $this->renderFile('controller.php.twig', $target, array(
             'dto_class'         => $this->dtoClassName,
-            'date_since'        => new \DateTime(),
+            'date_since'        => $dateSince->format('Y-m-d'),
             'bundle_namespace'  => $this->bundle->getNamespace(),
             'bundle_name'       => $this->bundle->getName()
         ));
@@ -127,10 +129,10 @@ class ApiControllerGenerator extends AbstractGenerator
      */
     public function generateFeatures($dtoClassName, $dataFormat = 'json')
     {
-        $dir    = $this->bundle->getPath() . '/../../features';
+        $dir    = $this->bundle->getPath() . '/../../../features';
         $target = sprintf('%s/%s.feature', $dir, strtolower($dtoClassName));
 
-        $this->renderFile('feature.feature.twig', $target, array(
+        $this->renderFile('feature.php.twig', $target, array(
             'dto_class'         => $dtoClassName,
             'bundle_namespace'  => $this->bundle->getNamespace(),
             'bundle_name'       => $this->bundle->getName(),
