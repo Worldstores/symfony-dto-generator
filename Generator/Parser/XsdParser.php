@@ -82,6 +82,14 @@ class XsdParser implements ParserInterface
                             $this->setComplexTypeChildrenRecursively($node, $element);
                             
                             $parentElement->addChild($element);
+                            
+                        } elseif ($this->isCustomTypeNode($node)) {
+                            $element = new Parser\Element\ComplexTypeElement();
+                            $element->setName($node->getAttribute('name'));
+                            $this->setCustomTypeChildrenRecursively($node, $element);
+                            
+                            $parentElement->addChild($element);
+
                         } else {
                             $element = new Parser\Element\Element();
                             $element->setName($node->getAttribute('name'));
@@ -152,6 +160,100 @@ class XsdParser implements ParserInterface
             $localName = $childNode->localName;
             if ($childNode->nodeType === XML_ELEMENT_NODE && $localName == 'complexType') {
                 $this->addChildrenElements($childNode, $element);
+            }
+        }
+    }
+    
+    
+    /**
+     * Checks if the node is custom Type which is user Defined. 
+     * It is a Complex type but name given by user. 
+     * 
+     * If given type of the element is not ComplexType but there is root level element with that name, 
+     * it is supposed to be custom Node..
+     * 
+     * Example of XML
+     * <?xml version="1.0" encoding="UTF-8"?>
+     * <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+        <xs:element name="oUm">
+          <xs:annotation>
+            <xs:documentation>This is an example of complex Element</xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="id">
+                <xs:annotation>
+                  <xs:documentation>Unique id</xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="100"/>
+                    <xs:minLength value="1"/>
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>        
+              <xs:element name="billToAddress" type="addressType" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>Bill to address</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="address" type="addressType"/>
+        <xs:complexType name="addressType">
+          <xs:all>
+            <xs:element name="title" type="xs:string" minOccurs="0">
+              <xs:annotation>
+                <xs:documentation>Customer title</xs:documentation>
+              </xs:annotation>
+            </xs:element>
+          </xs:all>
+        </xs:complexType>
+      </xs:schema>
+     * 
+     * @param DomNode $node
+     * 
+     * @return boolean
+     */
+    protected function isCustomTypeNode($node)
+    {
+        $nodes = $this->start->childNodes;
+
+        $nodeType = $node->nodeType;
+        $typeAttribute = $node->getAttribute('type');
+        
+        if ($nodeType === XML_ELEMENT_NODE) {
+            if (!empty($typeAttribute)) {
+                foreach ($nodes as $node) {
+                    //If any Node exists with the same name as Attribute Type defined for any element
+                    if (method_exists($node, 'getAttribute')) {            
+                        if ($typeAttribute === $node->getAttribute('name')) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * Sets Children of Custom Type Recursively
+     * @param DomNode $node
+     * @param Element $element
+     */
+    protected function setCustomTypeChildrenRecursively($node, &$element)
+    {
+        $nodes = $this->start->childNodes;
+        $typeAttribute = $node->getAttribute('type');
+
+        foreach ($nodes as $node) {
+            //If any Node exists with the same name as Attribute Type defined for any element
+            if (method_exists($node, 'getAttribute')) {            
+                if ($typeAttribute === $node->getAttribute('name')) {
+                    $this->addChildrenElements($node, $element);
+                }
             }
         }
     }
